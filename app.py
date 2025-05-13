@@ -44,55 +44,64 @@ year_options = [{'label': 'All Years (1992-2020)', 'value': 'All'}] + \
 app = dash.Dash(__name__)
 server = app.server
 
-# --- 3. Define App Layout ---
 app.layout = html.Div([
-    html.H1("Olympic Medals Dashboard (1992-2020)", style={'textAlign': 'center', 'marginBottom': '40px'}),
+    html.H1("Olympic Medals Dashboard (1992-2020)", style={'textAlign': 'center', 'marginBottom': '30px'}),
 
-    
+    # Filtros em duas colunas
     html.Div([
-        html.Label("Select Olympic Year (for Bar Chart):"),
-        dcc.Dropdown(
-            id='year-dropdown',
-            options=year_options,
-            value='All'
-        ),
+        html.Div([
+            html.Label("Select Olympic Year (for Bar Chart):"),
+            dcc.Dropdown(
+                id='year-dropdown',
+                options=year_options,
+                value='All'
+            ),
+            html.Br(),
+            html.Label("Select Country (for Pie Chart):"),
+            dcc.Dropdown(
+                id='country-dropdown',
+                options=[{'label': country, 'value': country} for country in all_countries],
+                value=all_countries[0] if all_countries else None
+            ),
+        ], style={'width': '48%', 'display': 'inline-block', 'verticalAlign': 'top', 'paddingRight': '2%'}),
 
-        html.Br(),
-
-        html.Label("Select Medal Type (for Map, Area, Bar Charts):"),
-        dcc.Dropdown(
-            id='medal-type-dropdown',
-            options=[{'label': medal.replace('_', ' '), 'value': medal} for medal in medal_types],
-            value='Total_Medals'
-        ),
-
-        html.Br(),
-
-        html.Label("Select Country (for Pie Chart):"),
-        dcc.Dropdown(
-            id='country-dropdown',
-            options=[{'label': country, 'value': country} for country in all_countries],
-            value=all_countries[0] if all_countries else None
-        ),
-    ], style={'width': '80%', 'margin': '0 auto'}),
+        html.Div([
+            html.Label("Select Medal Type (for all charts):"),
+            dcc.Dropdown(
+                id='medal-type-dropdown',
+                options=[{'label': medal.replace('_', ' '), 'value': medal} for medal in medal_types],
+                value='Total_Medals'
+            ),
+        ], style={'width': '48%', 'display': 'inline-block', 'verticalAlign': 'top'}),
+    ], style={'width': '90%', 'margin': '0 auto'}),
 
     html.Br(),
-    html.H2("Medal Insights", style={'textAlign': 'center'}),
+    html.H2("Medals by Country", style={'textAlign': 'center'}),
 
-   
+    # Primeira linha de gráficos
     html.Div([
-        dcc.Graph(id='pie-chart'),
-        dcc.Graph(id='map-chart')
-    ], style={'display': 'flex', 'flexDirection': 'column', 'alignItems': 'center'}),
+        html.Div([
+            dcc.Graph(id='pie-chart')
+        ], style={'width': '48%', 'display': 'inline-block', 'paddingRight': '2%'}),
+
+        html.Div([
+            dcc.Graph(id='bar-chart')
+        ], style={'width': '48%', 'display': 'inline-block'}),
+    ], style={'width': '90%', 'margin': '0 auto'}),
 
     html.Br(),
-    html.H2("Top Countries Over Time", style={'textAlign': 'center'}),
+    html.H2("Medals Over Time and World Map", style={'textAlign': 'center'}),
 
-   
+    # Segunda linha de gráficos
     html.Div([
-        dcc.Graph(id='area-chart'),
-        dcc.Graph(id='bar-chart')
-    ], style={'display': 'flex', 'flexDirection': 'column', 'alignItems': 'center'}),
+        html.Div([
+            dcc.Graph(id='area-chart')
+        ], style={'width': '100%', 'marginBottom': '30px'}),
+
+        html.Div([
+            dcc.Graph(id='map-chart')
+        ], style={'width': '100%'})
+    ], style={'width': '90%', 'margin': '0 auto'})
 ])
 
 
