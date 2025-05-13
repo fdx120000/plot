@@ -4,9 +4,8 @@ import dash
 from dash import dcc, html
 from dash.dependencies import Input, Output
 
-#dados
 try:
-    df_full = pd.read_csv('https://raw.githubusercontent.com/07leonam/plot_vsd/refs/heads/main/Summer_olympic_Medals.csv')
+    df_full = pd.read_csv('https://raw.githubusercontent.com/fdx120000/plot/refs/heads/main/Summer_olympic_Medals.csv')
 except FileNotFoundError:
     print("Error: 'Summer_olympic_Medals.csv' not found. Make sure the file is in the same directory as the script.")
     exit()
@@ -14,7 +13,6 @@ except Exception as e:
     print(f"Error loading CSV: {e}")
     exit()
 
-# Expected columns based on user input
 expected_cols_from_user = ['Year', 'Host_country', 'Host_city', 'Country_Name', 'Country_Code', 'Gold', 'Silver', 'Bronze']
 missing_cols = [col for col in expected_cols_from_user if col not in df_full.columns]
 if missing_cols:
@@ -195,13 +193,13 @@ def update_bar_chart(selected_medal_type, selected_year_value):
             year_title_segment = str(selected_year_value) # Fallback if label not found
 
     df_grouped_bar = current_df_bar.groupby('Country_Name', as_index=False)[medal_col].sum()
-    df_grouped_bar = df_grouped_bar.nlargest(10, medal_col) # Get top 10 based on the selected medal column
+    df_grouped_bar = df_grouped_bar.nlargest(10, medal_col) 
 
-    bar_color_val = None # Default color
+    bar_color_val = None 
     if medal_col == 'Gold': bar_color_val = 'gold'
     elif medal_col == 'Silver': bar_color_val = 'silver'
     elif medal_col == 'Bronze': bar_color_val = '#cd7f32'
-    # For 'Total_Medals', Plotly Express will use its default color sequence
+
 
     fig_bar = px.bar(df_grouped_bar,
                      x='Country_Name',
@@ -212,6 +210,5 @@ def update_bar_chart(selected_medal_type, selected_year_value):
         fig_bar.update_traces(marker_color=bar_color_val)
     return fig_bar
 
-# Executar o aplicativo
 if __name__ == '__main__':
     app.run_server(debug=True)
